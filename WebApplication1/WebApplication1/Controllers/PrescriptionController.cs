@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using WebApplication1.Models;
+using WebApplication1.Services;
 
 namespace WebApplication1.Controllers
 {
@@ -13,40 +15,19 @@ namespace WebApplication1.Controllers
     [ApiController]
     public class PrescriptionController : ControllerBase
     {
-
-     
-
-        
-        [HttpGet]
-        public async Task<IActionResult> Get(int id)
+        private readonly IHospitalService _hospitalService;
+        public PrescriptionController(IHospitalService Service)
         {
-            List<Doctor> lekarze = new List<Doctor>();
+            _hospitalService = Service;
+        }
+        [Authorize]
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> Get(string id)
+        {
+            var res = await _hospitalService.GetPrescription(int.Parse(id));
 
-            using (SqlConnection connection = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=codefirst;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"))
-            {
-                connection.Open();
-
-                string query = "SELECT * From Doctor where id = $\"cos {parametr}\""; 
-
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            int IdDoctor = (int)reader["IdDoctor"];
-                            string FirstName = (string)reader["FirstName"];
-                            string LastName = (string)reader["LastName"];
-                            string Email = (string)reader["email"];
-
-                            Doctor lekarz = new Doctor { IdDoctor=IdDoctor,FirstName =FirstName,LastName = LastName, Email = Email };
-                            lekarze.Add(lekarz);
-                        }
-                    }
-                }
-            }
-
-            return Ok(lekarze);
+            return Ok(res);
         }
     }
 }

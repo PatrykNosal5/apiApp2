@@ -1,10 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using System.Text;
 using WebApplication1.Models;
 
 namespace WebApplication1.Data
 {
     public class HospitalContext : DbContext
     {
+        public DbSet<User> Users { get; set; } 
         public DbSet<Doctor> Doctors { get; set; }
         public DbSet<Medicament> Medicaments { get; set; }
         public DbSet<Patient> Patients { get; set; }
@@ -17,6 +21,8 @@ namespace WebApplication1.Data
         protected HospitalContext()
         {
         }
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -96,6 +102,12 @@ namespace WebApplication1.Data
 
             }
             );
+            modelBuilder.Entity<User>(doc =>
+            {
+                doc.ToTable("User");
+
+                doc.HasKey(e =>  e.ID);
+            });
             Seed(modelBuilder);
         }
 
@@ -204,6 +216,47 @@ namespace WebApplication1.Data
                         IdPrescription = 2,
                         Dose = 2,
                         Details = "kaweczka"
+                    }
+                });
+            }
+            );
+            modelBuilder.Entity<User>(doc =>
+            {
+                string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                       password: "password1",
+                       salt: Encoding.UTF8.GetBytes("123456789123456789123456789"),
+                       prf: KeyDerivationPrf.HMACSHA1,
+                       iterationCount: 1000,
+                       numBytesRequested: 256 / 8
+                       ));
+
+                string hashed2 = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                      password: "password2",
+                      salt: Encoding.UTF8.GetBytes("012345678901234567890123456789"),
+                      prf: KeyDerivationPrf.HMACSHA1,
+                      iterationCount: 1000,
+                      numBytesRequested: 256 / 8
+                      ));
+
+                doc.HasData(new List<User>()
+                {
+                    
+                    new User
+                    {
+                        ID =1,
+                        Login = "login1",
+                        Password = hashed,
+                        Salt = "123456789123456789123456789",
+                        RefreshToken = null
+                   
+                    },
+                    new User
+                    {
+                        ID =2,
+                        Login = "login2",
+                        Password = hashed2,
+                        Salt = "012345678901234567890123456789",
+                        RefreshToken = null
                     }
                 });
             }

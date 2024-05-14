@@ -139,14 +139,14 @@ namespace WebApplication1.Migrations
                         new
                         {
                             IdPatient = 1,
-                            Birthdate = new DateTime(2023, 5, 17, 23, 24, 7, 255, DateTimeKind.Local).AddTicks(6282),
+                            Birthdate = new DateTime(2023, 5, 24, 23, 35, 35, 325, DateTimeKind.Local).AddTicks(7452),
                             FirstName = "Jan",
                             LastName = "Koka"
                         },
                         new
                         {
                             IdPatient = 2,
-                            Birthdate = new DateTime(2023, 5, 17, 23, 24, 7, 255, DateTimeKind.Local).AddTicks(6288),
+                            Birthdate = new DateTime(2023, 5, 24, 23, 35, 35, 325, DateTimeKind.Local).AddTicks(7462),
                             FirstName = "Marian",
                             LastName = "Kowa"
                         });
@@ -184,16 +184,16 @@ namespace WebApplication1.Migrations
                         new
                         {
                             IdPrescription = 1,
-                            Date = new DateTime(2023, 5, 17, 23, 24, 7, 255, DateTimeKind.Local).AddTicks(6183),
-                            DueDate = new DateTime(2023, 5, 17, 23, 24, 7, 255, DateTimeKind.Local).AddTicks(6229),
+                            Date = new DateTime(2023, 5, 24, 23, 35, 35, 325, DateTimeKind.Local).AddTicks(7293),
+                            DueDate = new DateTime(2023, 5, 24, 23, 35, 35, 325, DateTimeKind.Local).AddTicks(7360),
                             IdDoctor = 1,
                             IdPatient = 1
                         },
                         new
                         {
                             IdPrescription = 2,
-                            Date = new DateTime(2023, 5, 17, 23, 24, 7, 255, DateTimeKind.Local).AddTicks(6237),
-                            DueDate = new DateTime(2023, 5, 17, 23, 24, 7, 255, DateTimeKind.Local).AddTicks(6241),
+                            Date = new DateTime(2023, 5, 24, 23, 35, 35, 325, DateTimeKind.Local).AddTicks(7371),
+                            DueDate = new DateTime(2023, 5, 24, 23, 35, 35, 325, DateTimeKind.Local).AddTicks(7377),
                             IdDoctor = 2,
                             IdPatient = 2
                         });
@@ -235,6 +235,50 @@ namespace WebApplication1.Migrations
                             IdPrescription = 2,
                             Details = "kaweczka",
                             Dose = 2
+                        });
+                });
+
+            modelBuilder.Entity("WebApplication1.Models.User", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("Login")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Salt")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("User", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            Login = "login1",
+                            Password = "Z/DiJ4wcLRUUsveNBvCiENnIaCGTOjvePedL454CraI=",
+                            Salt = "123456789123456789123456789"
+                        },
+                        new
+                        {
+                            ID = 2,
+                            Login = "login2",
+                            Password = "aMFz1AB6IlUGoSk1+yVR2/i88odz24jUz3OJetd0Nuw=",
+                            Salt = "012345678901234567890123456789"
                         });
                 });
 
